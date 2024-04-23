@@ -78,7 +78,9 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Details')),
+      appBar: AppBar(title: const Text('Details'),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : Center(

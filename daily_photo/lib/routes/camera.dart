@@ -68,37 +68,47 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Camera')),
+      appBar: AppBar(title: const Text('Camera'),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Stack(
               children: [
-                CameraPreview(_controller),
+                Positioned.fill(child: CameraPreview(_controller)),
+                Positioned(
+                  bottom: 16.0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: FloatingActionButton(
+                      onPressed: _takePicture,
+                      child: const Icon(Icons.camera),
+                    ),
+                  ),
+                ),
               ],
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          try {
-            await _initializeControllerFuture;
-            // Take a photo
-            XFile imageFile = await _controller.takePicture();
-            Position position = await Geolocator.getCurrentPosition(
-                desiredAccuracy: LocationAccuracy.high);
-            // Upload the taken photo to Firebase Storage
-            String imageUrl =
-                await uploadImageToFirebaseStorage(imageFile.path);
-            // Upload the location to Firebase Firestore
-            if (_currentPosition != null) {
-              await uploadLocationToFirestore(
-                  position, imageUrl, DateTime.now(), context);
-            }
-          } catch (e) {
-            print(e);
-          }
-        },
-        child: const Icon(Icons.camera),
-      ),
     );
+  }
+
+  void _takePicture() async {
+    try {
+      await _initializeControllerFuture;
+      // Take a photo
+      XFile imageFile = await _controller.takePicture();
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      // Upload the taken photo to Firebase Storage
+      String imageUrl = await uploadImageToFirebaseStorage(imageFile.path);
+      // Upload the location to Firebase Firestore
+      if (_currentPosition != null) {
+        await uploadLocationToFirestore(
+            position, imageUrl, DateTime.now(), context);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
@@ -108,7 +118,10 @@ Future<void> uploadLocationToFirestore(Position position, String imageUrl,
     // Convert DateTime to a formatted string (e.g., 'yyyyMMddHHmmss')
     String documentName = DateFormat('yyyyMMdd').format(dateTime);
 
-    await FirebaseFirestore.instance.collection('images').doc(documentName).set({
+    await FirebaseFirestore.instance
+        .collection('images')
+        .doc(documentName)
+        .set({
       'imageUrl': imageUrl,
       'latitude': position.latitude,
       'longitude': position.longitude,
@@ -125,7 +138,8 @@ Future<void> uploadLocationToFirestore(Position position, String imageUrl,
 // Do the same for the image
 Future<String> uploadImageToFirebaseStorage(String imagePath) async {
   try {
-    Reference ref = FirebaseStorage.instance.ref().child('images/${DateTime.now()}.png');
+    Reference ref =
+        FirebaseStorage.instance.ref().child('images/${DateTime.now()}.png');
     await ref.putFile(File(imagePath));
     return await ref.getDownloadURL();
   } catch (e) {

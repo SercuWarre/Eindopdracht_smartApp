@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'Daily Photo',
       theme: ThemeData(
         scaffoldBackgroundColor:
-            Colors.black, // Set scaffold background color to black
+            Colors.grey, // Set scaffold background color to black
         primarySwatch: Colors.blue,
         textTheme: const TextTheme(
           bodyText1: TextStyle(color: Colors.white), // Set text color to white
