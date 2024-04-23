@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1002369640246",
+    "project_id": "eindopdracht-f0cf9",
+    "storage_bucket": "eindopdracht-f0cf9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1002369640246:android:d470559f3d71def64df597",
+        "android_client_info": {
+          "package_name": "com.example.daily_photo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB320IH3kRieswSWr9XUFejJ3KYqsp-MJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
