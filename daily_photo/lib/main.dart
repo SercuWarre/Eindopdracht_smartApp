@@ -4,15 +4,18 @@ import 'package:daily_photo/firebase_options.dart';
 import 'package:daily_photo/models/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,8 +25,8 @@ class MyApp extends StatelessWidget {
             Colors.grey, // Set scaffold background color to black
         primarySwatch: Colors.blue,
         textTheme: const TextTheme(
-          bodyText1: TextStyle(color: Colors.white), // Set text color to white
-          bodyText2: TextStyle(color: Colors.white), // Set text color to white
+          bodyLarge: TextStyle(color: Colors.white), // Set text color to white
+          bodyMedium: TextStyle(color: Colors.white), // Set text color to white
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.black, // Set app bar color to black
@@ -31,7 +34,7 @@ class MyApp extends StatelessWidget {
               TextStyle(color: Colors.white), // Set app bar text color to white
         ),
       ),
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }

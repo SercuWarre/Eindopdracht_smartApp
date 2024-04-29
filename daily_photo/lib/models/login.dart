@@ -1,9 +1,14 @@
+import 'package:daily_photo/routes/RegisterPage.dart';
 import 'package:daily_photo/routes/callendar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 // ...
+// import statements...
+
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -13,41 +18,43 @@ class _LoginPageState extends State<LoginPage> {
   String password = '';
 
   void login() async {
-    if (email.isNotEmpty && password.isNotEmpty) {
-      try {
-        final credential =
-           
-
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email,
-          password: password,
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CalendarPage()),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No user found for that email.')),
         );
-        if (credential.user != null) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => CalendarPage()),
-          );
-        }
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'user-not-found') {
-          print('No user found for that email.');
-        } else if (e.code == 'wrong-password') {
-          print('Wrong password provided for that user.');
-        }
+       
+      } else if (e.code == 'wrong-password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Wrong password provided for that user.')),
+        );
       }
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => CalendarPage()),
-      // );
     }
+    // login method...
+  }
+
+  void goToRegisterPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RegisterPage()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
-        iconTheme: IconThemeData(color: Colors.white),
+        title: const Text('Login'),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -75,6 +82,11 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: login,
               child: const Text('Login'),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: goToRegisterPage,
+              child: const Text('Register'),
             ),
           ],
         ),

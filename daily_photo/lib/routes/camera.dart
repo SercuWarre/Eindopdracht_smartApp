@@ -1,13 +1,11 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart'; // Import package for date formatting
+import 'package:daily_photo/models/FirebaseService.dart';
 
 class CameraPage extends StatefulWidget {
+
   @override
   _CameraPageState createState() => _CameraPageState();
 }
@@ -32,8 +30,11 @@ class _CameraPageState extends State<CameraPage> {
 
       _controller = CameraController(
         selectedCamera,
-        ResolutionPreset.medium,
+        ResolutionPreset.medium, // Set a lower resolution preset for faster initialization
       );
+      _controller.setFlashMode(FlashMode.auto);
+
+
       _initializeControllerFuture = _controller.initialize();
       await _initializeControllerFuture;
       setState(() {
@@ -68,82 +69,56 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Camera'),
-        iconTheme: IconThemeData(color: Colors.white),
+      appBar: AppBar(
+        title: const Text('Camera'),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Stack(
-              children: [
-                Positioned.fill(child: CameraPreview(_controller)),
-                Positioned(
-                  bottom: 16.0,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: FloatingActionButton(
-                      onPressed: _takePicture,
-                      child: const Icon(Icons.camera),
+          : Builder(
+              builder: (context) => Stack(
+                children: [
+                  Positioned.fill(child: CameraPreview(_controller)),
+                  Positioned(
+                    bottom: 16.0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: FloatingActionButton(
+                        onPressed: _takePicture,
+                        child: const Icon(Icons.camera),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
     );
   }
 
   void _takePicture() async {
     try {
+      // Ensure the controller is initialized
       await _initializeControllerFuture;
-      // Take a photo
-      XFile imageFile = await _controller.takePicture();
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+
+      // Capture the photo
+      final XFile imageFile = await _controller.takePicture();
+
+      // Get the current position asynchronously
+      final Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.medium);
+
       // Upload the taken photo to Firebase Storage
-      String imageUrl = await uploadImageToFirebaseStorage(imageFile.path);
-      // Upload the location to Firebase Firestore
+      final String imageUrl =
+          await FirebaseService.uploadImageToFirebaseStorage(imageFile.path);
+
+      // Upload the location and image URL to Firebase Firestore
       if (_currentPosition != null) {
-        await uploadLocationToFirestore(
+        await FirebaseService.uploadImageToFirestore(
             position, imageUrl, DateTime.now(), context);
       }
     } catch (e) {
       print(e);
     }
-  }
-}
-
-Future<void> uploadLocationToFirestore(Position position, String imageUrl,
-    DateTime dateTime, BuildContext context) async {
-  try {
-    // Convert DateTime to a formatted string (e.g., 'yyyyMMddHHmmss')
-    String documentName = DateFormat('yyyyMMdd').format(dateTime);
-
-    await FirebaseFirestore.instance
-        .collection('images')
-        .doc(documentName)
-        .set({
-      'imageUrl': imageUrl,
-      'latitude': position.latitude,
-      'longitude': position.longitude,
-      // Add other fields as needed
-    });
-
-    // Pop the camera page off the stack
-    Navigator.pop(context);
-  } catch (e) {
-    print("Error uploading: $e");
-  }
-}
-
-// Do the same for the image
-Future<String> uploadImageToFirebaseStorage(String imagePath) async {
-  try {
-    Reference ref =
-        FirebaseStorage.instance.ref().child('images/${DateTime.now()}.png');
-    await ref.putFile(File(imagePath));
-    return await ref.getDownloadURL();
-  } catch (e) {
-    print("Error uploading image: $e");
-    return '';
   }
 }

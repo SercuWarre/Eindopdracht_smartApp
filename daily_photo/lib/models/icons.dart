@@ -2,15 +2,17 @@
 import 'package:flutter/material.dart';
 
 class icons extends StatelessWidget {
+  const icons({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -18,24 +20,24 @@ class icons extends StatelessWidget {
               Container(
                 width: 10,
                 height: 10,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(255, 255, 255, 0.4),
                 ),
-                child: SunriseIcon(),
+                child: const SunriseIcon(),
               ),
               Container(
                 width: 10,
                 height: 10,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(255, 255, 255, 0.4),
                 ),
-                child: SunsetIcon(),
+                child: const SunsetIcon(),
               ),
             ],
           ),
-          Text(
+          const Text(
             'Daily Snaps',
             style: TextStyle(
               fontSize: 30,
@@ -44,8 +46,8 @@ class icons extends StatelessWidget {
             ),
           ),
           Container(
-            constraints: BoxConstraints(maxWidth: 600),
-            margin: EdgeInsets.symmetric(horizontal: 20),
+            constraints: const BoxConstraints(maxWidth: 600),
+            margin: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
               'Capture the moment. Every day, a new photo. Immerse yourself in a world of daily images.',
               textAlign: TextAlign.center,
@@ -55,14 +57,14 @@ class icons extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 width: 2,
                 height: 2,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(255, 255, 255, 0.4),
                 ),
@@ -70,7 +72,7 @@ class icons extends StatelessWidget {
               Container(
                 width: 2,
                 height: 2,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(255, 255, 255, 0.4),
                 ),
@@ -78,7 +80,7 @@ class icons extends StatelessWidget {
               Container(
                 width: 2,
                 height: 2,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(255, 255, 255, 0.4),
                 ),
@@ -86,7 +88,7 @@ class icons extends StatelessWidget {
               Container(
                 width: 2,
                 height: 2,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(255, 255, 255, 0.4),
                 ),
@@ -94,7 +96,7 @@ class icons extends StatelessWidget {
               Container(
                 width: 2,
                 height: 2,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(255, 255, 255, 0.4),
                 ),
@@ -102,7 +104,7 @@ class icons extends StatelessWidget {
               Container(
                 width: 2,
                 height: 2,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(255, 255, 255, 0.4),
                 ),
@@ -110,16 +112,16 @@ class icons extends StatelessWidget {
               Container(
                 width: 2,
                 height: 2,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(255, 255, 255, 0.4),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Container(
-            constraints: BoxConstraints(minHeight: 400),
+            constraints: const BoxConstraints(minHeight: 400),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -133,7 +135,7 @@ class icons extends StatelessWidget {
                       side: BorderSide(color: Colors.grey[200]!),
                     ),
                   ),
-                  child: Text('Get Started'),
+                  child: const Text('Get Started'),
                 ),
               ],
             ),
@@ -145,9 +147,11 @@ class icons extends StatelessWidget {
 }
 
 class SunriseIcon extends StatelessWidget {
+  const SunriseIcon({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Icon(
+    return const Icon(
       Icons.wb_sunny,
       color: Colors.black,
     );
@@ -155,9 +159,11 @@ class SunriseIcon extends StatelessWidget {
 }
 
 class SunsetIcon extends StatelessWidget {
+  const SunsetIcon({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Icon(
+    return const Icon(
       Icons.nightlight_round,
       color: Colors.black,
     );
