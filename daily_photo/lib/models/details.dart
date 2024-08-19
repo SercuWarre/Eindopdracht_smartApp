@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
@@ -33,9 +34,16 @@ class _DetailsPageState extends State<DetailsPage> {
 
   Future<void> _getImageInfo() async {
     try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        print('No user logged in');
+        return null;
+      }
+
+      String userId = user.uid;
       String formattedDate = DateFormat('yyyyMMdd').format(widget.selectedDay);
       Map<String, dynamic>? imageData =
-          await FirebaseService.getImageInfoFromFirestore(formattedDate);
+          await FirebaseService.getImageInfoFromFirestore(formattedDate+userId);
       if (imageData != null) {
         setState(() {
           _imagePath = imageData['imageUrl'];
@@ -55,9 +63,15 @@ class _DetailsPageState extends State<DetailsPage> {
 
   Future<void> _getEventInfo() async {
     try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        print('No user logged in');
+        return null;
+      }
+      String userId = user.uid;
       String formattedDate = DateFormat('yyyyMMdd').format(widget.selectedDay);
       Map<String, dynamic>? eventData =
-          await FirebaseService.getEventFromFirestore(formattedDate);
+          await FirebaseService.getEventFromFirestore(formattedDate+userId);
       if (eventData != null) {
         setState(() {
           _event = eventData['event'];

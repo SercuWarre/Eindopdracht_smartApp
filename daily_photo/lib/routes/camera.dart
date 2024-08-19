@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:daily_photo/models/FirebaseService.dart';
 
 class CameraPage extends StatefulWidget {
-
   @override
   _CameraPageState createState() => _CameraPageState();
 }
@@ -30,10 +30,10 @@ class _CameraPageState extends State<CameraPage> {
 
       _controller = CameraController(
         selectedCamera,
-        ResolutionPreset.medium, // Set a lower resolution preset for faster initialization
+        ResolutionPreset
+            .medium, // Set a lower resolution preset for faster initialization
       );
       _controller.setFlashMode(FlashMode.auto);
-
 
       _initializeControllerFuture = _controller.initialize();
       await _initializeControllerFuture;
@@ -108,14 +108,24 @@ class _CameraPageState extends State<CameraPage> {
       final Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.medium);
 
+      // Get the current user's UID
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        // Handle the case where the user is not logged in
+        print('No user logged in');
+        return;
+      }
+
+      final String userId = user.uid;
+
       // Upload the taken photo to Firebase Storage
       final String imageUrl =
           await FirebaseService.uploadImageToFirebaseStorage(imageFile.path);
 
-      // Upload the location and image URL to Firebase Firestore
+      // Upload the location, image URL, and userId to Firebase Firestore
       if (_currentPosition != null) {
         await FirebaseService.uploadImageToFirestore(
-            position, imageUrl, DateTime.now(), context);
+            userId, position, imageUrl, DateTime.now(), context);
       }
     } catch (e) {
       print(e);

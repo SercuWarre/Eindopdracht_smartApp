@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -71,8 +72,19 @@ class _AddEventPageState extends State<AddEventPage> {
   void addEvent(DateTime dateTime) {
     String event = _eventController.text.trim();
     String description = _descriptionController.text.trim();
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User is not logged in')),
+      );
+      return;
+    }
+    String userId = user.uid;
     if (event.isNotEmpty && description.isNotEmpty) {
       String documentName = DateFormat('yyyyMMdd').format(dateTime);
+      documentName += userId;
+
+      
       FirebaseFirestore.instance.collection('events').doc(documentName).set({
         'event': event,
         'description': description,
